@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    #messages > li{
+      padding: 0.5rem 1rem;
+    }
+    #messages > li:nth-child(odd){
+      background-color: #efefef;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h1 class="text-2xl text-center">Chat</h1>
+
+    <div>
+        <ul id="messages" class=" m-0 p-0 list-none"> </ul>
+            
+            <form action="" id="form" class="fixed bottom-0 flex justify-evenly p-5 border-solid border-2 border-gray-300 w-full h-20 bg-gray-200">
+                <input id="input" class="p-4 h-10 w-[80%] border-solid border-2 border-blue-400 rounded-2xl" autocomplete="off" placeholder="Type anything" />
+                <button class="p-0 bg-blue-600 text-white rounded-2xl w-20 h-10">Send</button>
+            </form>
+        
+    </div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+    var messages = document.getElementById('messages');
+    var s = document.createElement('li');
+    
+    var form = document.getElementById('form');
+    var input = document.getElementById('input');
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(input.value){
+        socket.emit('chat message', input.value);
+        input.value = '';
+
+      }
+    });
+    socket.on('chat message', function(msg){
+     
+      var item = document.createElement('li');
+      item.textContent = msg;
+      messages.appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+  </script>
+</body>
+</html>
